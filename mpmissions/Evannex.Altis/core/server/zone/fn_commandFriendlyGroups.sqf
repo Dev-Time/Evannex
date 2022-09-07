@@ -4,16 +4,32 @@ While {TRUE} do {
 		{	// Add waypoint to group (Will do for all groups)
 			private _y = _x;
 			// Check number of waypoints, if less then 3 add more.
-			if (count (waypoints _y) < 3 && !br_zone_taken) then {
-				//_pos = [] call getLocation;
-				private _pos = [getMarkerPos "ZONE_RADIUS", 0, br_zone_radius * sqrt br_max_radius_distance, 2, 0, 60, 0] call BIS_fnc_findSafePos;
-				while {count _pos > 2} do {
-					_pos = [getMarkerPos "ZONE_RADIUS", 0, br_zone_radius * sqrt br_max_radius_distance, 2, 0, 60, 0] call BIS_fnc_findSafePos;
-					sleep 0.1;
+			if (typeOf (Vehicle (leader _y)) == "B_T_VTOL_01_armed_F") then {
+				if (count (waypoints _y) < 2) then {
+					private _pos = [getMarkerPos "ZONE_RADIUS", 0, br_zone_radius * sqrt br_max_radius_distance, 2, 0, 60, 0] call BIS_fnc_findSafePos;
+					private _wp = _y addWaypoint [_pos, 0];
+					_wp setWaypointType "Loiter";
+					_wp setWaypointLoiterType "CIRCLE_L";
+					_wp setWaypointLoiterRadius 1000;
+					_wp setWaypointLoiterAltitude 400;
+					_wp setWaypointCombatMode "RED";
+					_wp setWaypointBehaviour "COMBAT";
 				};
-				private _wp = _y addWaypoint [_pos, 0];
-				_wp setWaypointType (selectrandom ["Sentry", "Move", "Destroy"]);
-				_wp setWaypointStatements ["true","deleteWaypoint [group this, currentWaypoint (group this)]"];
+			} else {
+				if (count (waypoints _y) < 3 && !br_zone_taken) then {
+					//_pos = [] call getLocation;
+					private _pos = [getMarkerPos "ZONE_RADIUS", 0, br_zone_radius * sqrt br_max_radius_distance, 2, 0, 60, 0] call BIS_fnc_findSafePos;
+					while {count _pos > 2} do {
+						_pos = [getMarkerPos "ZONE_RADIUS", 0, br_zone_radius * sqrt br_max_radius_distance, 2, 0, 60, 0] call BIS_fnc_findSafePos;
+						sleep 0.1;
+					};
+					private _wp = _y addWaypoint [_pos, 0];
+					//_wp setWaypointType (selectrandom ["Sentry", "Move", "Destroy"]);
+					_wp setWaypointType "SAD";
+					_wp setWaypointCombatMode "RED";
+					_wp setWaypointBehaviour "COMBAT";
+					_wp setWaypointStatements ["true","deleteWaypoint [group this, currentWaypoint (group this)]"];
+				};
 			};
 			// Check group is empty, remove it from groups and delete it
 			if (({alive _x} count units _y) < 1) then { 
