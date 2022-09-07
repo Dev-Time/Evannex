@@ -229,4 +229,14 @@ class Params {
 class CfgFunctions 
 { 
     #include "SBGF\cfgfunctions.hpp"
+	#include "scripts\GOM\functions\GOM_fnc_functions.hpp"
 };
+class CfgCommunicationMenu
+{
+
+	#include "scripts\GOM\functions\GOM_fnc_aircraftLoadoutMenu.hpp"
+
+};
+
+#include "scripts\GOM\dialogs\GOM_dialog_parents.hpp"
+#include "scripts\GOM\dialogs\GOM_dialog_controls.hpp"
