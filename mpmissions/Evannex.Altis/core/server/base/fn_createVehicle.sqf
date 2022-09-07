@@ -6,7 +6,21 @@ private _unitChance = _this select 1;
 // Spawn custom units
 br_fnc_createAttackVehicle = {
 	// Select a random unit from the above list to spawn
-	_attackVehicle = (selectrandom _unitChance) createVehicle (getMarkerPos _spawnPad);
+	_veh = (selectrandom _unitChance);
+	_selected = False;
+	while {!_selected} do {
+		_isdupe = False;
+		{
+			if ((typeOf (Vehicle (leader _x))) == _veh) then {
+				_isdupe = True;
+				_veh = (selectrandom _unitChance);
+			};
+		} foreach br_friendly_vehicles;
+		if (_isdupe == False) then {
+			_selected = True;
+		};
+	};
+	_attackVehicle = _veh createVehicle (getMarkerPos _spawnPad);
 	//_attackVehicleGroup = [_attackVehicle] call fn_createVehicleCrew;
 	// Create its crew
 	createVehicleCrew _attackVehicle;
@@ -21,7 +35,6 @@ br_fnc_createAttackVehicle = {
 	// Apply the zone AI to the vehicle
 	br_friendly_ai_groups pushBack _attackVehicleGroup;
 	br_friendly_vehicles pushBack _attackVehicleGroup;
-	//br_headquarters sideChat format ["%1 - Ready for action!", getText (configFile >>  "CfgVehicles" >> typeof (Vehicle (leader _attackVehicleGroup)) >> "displayName")]
 };
 
 // What to do if the vehicle is dead but some units controlling the vehicle are alive
@@ -38,7 +51,7 @@ br_fnc_runVehicleUnit = {
 		// Spawn vehicle
 		[] call br_fnc_createAttackVehicle;
 		// Wait untill they die
-		waituntil{ sleep 5; ({(alive _x)} count (units _attackVehicleGroup) == 0) || (!alive _attackVehicle) || (fuel _attackVehicle == 0)};
+		waituntil{ sleep 5; ({(alive _x)} count (units _attackVehicleGroup) == 0) || (!alive _attackVehicle) || (fuel _attackVehicle == 0) || (!someAmmo _attackVehicle)};
 		// Do some cleanup cause they died
 		if (!alive _attackVehicle && fuel _attackVehicle == 0) then { deleteVehicle _attackVehicle; } else { br_empty_vehicles_in_garbage_collection pushBack _attackVehicle; };
 		if (({(alive _x)} count (units _attackVehicleGroup) < 1)) then 
