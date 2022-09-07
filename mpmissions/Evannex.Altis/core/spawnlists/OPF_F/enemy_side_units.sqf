@@ -8,6 +8,7 @@
 	["EMP", ["O_Truck_03_device_F"]],
 	["Helicopter", ["O_Heli_Attack_02_F"]],
 	["AA_Zone", ["O_APC_Tracked_02_AA_F"]],
+    ["SAM_Zone", ["O_Radar_System_02_F", "O_SAM_System_04_F", "O_SAM_System_04_F"]],
 	["Enemy_Camp", ["O_Soldier_F", "O_Soldier_F", "O_Soldier_AT_F", "O_Soldier_F", "O_Soldier_F"]],
 	["Enemy_Mortors", ["O_Mortar_01_F", "O_Mortar_01_F", "O_Mortar_01_F", "O_Mortar_01_F"]]
 ]
